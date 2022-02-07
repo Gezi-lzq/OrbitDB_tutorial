@@ -28,8 +28,12 @@ class NewPiecePlease {
             ...this.defaultOptions,
             indexBy: 'hash'
         }
+
         //创建并打开一个 docstore 数据库 命名为 'pieces'（曲目）
         this.pieces = await this.orbitdb.docstore('pieces',docStoreOptions)
+
+
+        if(this.onready) this.onready();
     }
 }
 

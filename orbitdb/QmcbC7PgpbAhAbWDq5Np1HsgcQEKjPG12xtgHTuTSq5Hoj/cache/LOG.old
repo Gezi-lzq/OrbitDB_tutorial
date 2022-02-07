@@ -1,0 +1,5 @@
+2022/02/08-02:10:10.463395 7f5c8bfff700 Recovering log #32
+2022/02/08-02:10:10.463499 7f5c8bfff700 Level-0 table #34: started
+2022/02/08-02:10:10.467344 7f5c8bfff700 Level-0 table #34: 269 bytes OK
+2022/02/08-02:10:10.473320 7f5c8bfff700 Delete type=3 #30
+2022/02/08-02:10:10.473417 7f5c8bfff700 Delete type=0 #32
