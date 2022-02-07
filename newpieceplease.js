@@ -31,9 +31,11 @@ class NewPiecePlease {
 
         //创建并打开一个 docstore 数据库 命名为 'pieces'（曲目）
         this.pieces = await this.orbitdb.docstore('pieces',docStoreOptions)
+        //  当我们需要数据库中最新和最全面的数据快照时，就需要调用这个函数
+        //  根据content addresses 将信息加载到内存
+        await this.pieces.load()
 
-
-        if(this.onready) this.onready();
+        this.onready();
     }
 }
 
