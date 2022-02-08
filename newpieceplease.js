@@ -84,6 +84,19 @@ class NewPiecePlease {
     return cid
   }
 
+  async getPracticeCount (piece) {
+    const counter = await this.orbitdb.counter(piece.counter)
+    await counter.load()
+    return counter.value
+  }
+
+  async incrementPracticeCounter (piece) {
+    const counter = await this.orbitdb.counter(piece.counter)
+    await counter.load()
+    const cid = await counter.inc()
+    return cid
+  }
+
 }
 
 try {
