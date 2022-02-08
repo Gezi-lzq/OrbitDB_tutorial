@@ -15,7 +15,7 @@ class NewPiecePlease {
       },
     });
 
-    this._init();
+    await this._init();
   }
 
   async _init() {
@@ -43,19 +43,27 @@ class NewPiecePlease {
   async addNewPiece(hash, instrument = "Piano") {
     const existingPiece = this.getPieceByHash(hash)
     if (existingPiece) {
-      await this.updatePieceByHash(hash, instrument)
-      return
+      const cid = await this.updatePieceByHash(hash, instrument)
+      return cid
     }
-    const cid = await this.pieces.put({ hash, instrument })
+
+    const dbName = 'counter.' + hash.substr(20,20)
+    const counter = await this.orbitdb.counter(dbName, this.defaultOptions)
+
+    const cid = await this.pieces.put({ hash, instrument,
+      counter: counter.id
+    })
     return cid;
   }
 
   getAllPieces() {
+    // 传递一个空字符串返回所有piece
     const pieces = this.pieces.get('')
     return pieces
   }
 
   getPieceByHash(hash) {
+    // 对数据库索引执行部分字符串搜索
     const singlePiece = this.pieces.get(hash)[0]
     return singlePiece
   }
@@ -63,7 +71,19 @@ class NewPiecePlease {
   getPieceByInstrument(instrument) {
     return this.pieces.query((piece) => piece.instrument === instrument)
   }
-  
+
+  async updatePieceByHash (hash, instrument= 'Piano') {
+    const piece = await this.getPieceByHash(hash)
+    piece.instrument = instrument
+    const cid = await this.pieces.put(piece)
+    return cid
+  }
+
+  async deletePieceByHash (hash) {
+    const cid = await this.pieces.del(hash)
+    return cid
+  }
+
 }
 
 try {
