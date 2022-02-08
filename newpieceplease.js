@@ -37,6 +37,13 @@ class NewPiecePlease {
     //  根据content addresses 将信息加载到内存
     await this.pieces.load();
 
+    //创建并打开一个 k-v 数据库 命名为 'user'
+    this.user = await this.orbitdb.kvstore('user', this.defaultOptions)
+    await this.user.load()
+
+    // 插入数据 建立 'pieces' -> pieces database address 的映射
+    await this.user.set('pieces', this.pieces.id)
+
     this.onready();
   }
 
@@ -94,6 +101,24 @@ class NewPiecePlease {
     const counter = await this.orbitdb.counter(piece.counter)
     await counter.load()
     const cid = await counter.inc()
+    return cid
+  }
+
+  async deleteProfileField (key) {
+    const cid = await this.user.del(key)
+    return cid
+  }
+
+  getAllProfileFields () {
+    return this.user.all
+  }
+
+  getProfileField (key) {
+    return this.user.get(key)
+  }
+
+  async updateProfileField (key, value) {
+    const cid = await this.user.set(key,value)
     return cid
   }
 

@@ -14,6 +14,7 @@ async function main() {
   await updatePieceTest();
 
   await practiceCountTest();
+  await PrifileFieldTest();
 
   await deletePieceTest();
 }
@@ -53,7 +54,7 @@ async function updatePieceTest() {
 }
 
 async function deletePieceTest() {
-    console.log("---deletePieceTest---")
+  console.log("---deletePieceTest---");
   const cid = await NPP.deletePieceByHash(
     "QmNR2n4zywCV61MeMLB6JwPueAPqheqpfiA4fLPMxouEmQ"
   );
@@ -62,12 +63,24 @@ async function deletePieceTest() {
 }
 
 async function practiceCountTest() {
-    console.log("--practiceCountTest---")
+  console.log("--practiceCountTest---");
   const piece = NPP.getPieceByHash(
     "QmNR2n4zywCV61MeMLB6JwPueAPqheqpfiA4fLPMxouEmQ"
   );
   const cid = await NPP.incrementPracticeCounter(piece);
 
+  const content = await NPP.node.dag.get(new IPFS.CID(cid));
+  console.log(content.value.payload);
+}
+
+async function PrifileFieldTest() {
+    console.log("---PrifileFieldTest---")
+    
+  await NPP.updateProfileField("username", "gezi");
+  const profileFields = NPP.getAllProfileFields();
+  console.log(profileFields)
+
+  const cid = await NPP.deleteProfileField("username");
   const content = await NPP.node.dag.get(new IPFS.CID(cid));
   console.log(content.value.payload);
 }
