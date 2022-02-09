@@ -6,13 +6,11 @@ class NewPiecePlease {
   async create() {
     // 创造一个ipfs实例
     this.node = await this.Ipfs.create({
-      preload: { enabled: false },
+      // preload: { enabled: false },
+      relay: { enabled: true, hop: { enabled: true, active: true } },
       repo: "./ipfs",
       EXPERIMENTAL: { pubsub: true },
-      config: {
-        Bootstrap: [],
-        Addresses: { Swarm: [] },
-      },
+      // config: { Bootstrap: [],Addresses: { Swarm: [] },},
     });
 
     await this._init();

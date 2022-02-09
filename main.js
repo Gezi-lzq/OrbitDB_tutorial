@@ -15,6 +15,7 @@ async function main() {
 
   await practiceCountTest();
   await PrifileFieldTest();
+  await IPFSConnectTest();
 
   await deletePieceTest();
 }
@@ -87,6 +88,18 @@ async function PrifileFieldTest() {
   const cid = await NPP.deleteProfileField("username");
   const content = await NPP.node.dag.get(new IPFS.CID(cid));
   console.log(content.value.payload);
+}
+
+async function IPFSConnectTest() {
+  console.log("---IPFSConnectTest---");
+  await NPP.node.bootstrap.reset();
+  const list = await NPP.node.bootstrap.list();
+  console.log(list);
+
+  console.log("---Enabling the swarm---")
+  NPP.node.config.set('Addresses.Swarm', ['/ip4/0.0.0.0/tcp/4002', '/ip4/127.0.0.1/tcp/4003/ws'], console.log)
+  const id = await NPP.node.id();
+  console.log("node publishing address",id.addresses);
 }
 
 main();
