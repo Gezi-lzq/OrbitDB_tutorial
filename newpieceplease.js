@@ -13,6 +13,8 @@ class NewPiecePlease {
       // config: { Bootstrap: [],Addresses: { Swarm: [] },},
     });
 
+    this.node.bootstrap.reset()
+
     await this._init();
   }
 
@@ -49,6 +51,9 @@ class NewPiecePlease {
       'pieces': this.pieces.id,
       'nodeId': peerInfo.id
     })
+
+    // 事件处理程序，用于处理连接到对等点的情况
+    this.node.libp2p.connectionManager.on('peer:connect', this.handlePeerConnected.bind(this))
 
     this.onready();
   }
@@ -135,6 +140,24 @@ class NewPiecePlease {
       if(!this.user.get(key)) 
         await this.user.set(key, fixtureData[key])
     }
+  }
+
+  async getIpfsPeers() {
+    const peers = await this.node.swarm.peers()
+    return peers
+  }
+
+  async connectToPeer (multiaddr, protocol = '/p2p-circuit/ipfs/') {
+    try {
+      await this.node.swarm.connect(protocol + multiaddr)
+    } catch(e) {
+      throw (e)
+    }
+  }
+
+  handlePeerConnected (ipfsPeer) {
+    const ipfsId = ipfsPeer.id.toB58String()
+    if (this.onpeerconnect) this.onpeerconnect(ipfsId)
   }
 
 }
