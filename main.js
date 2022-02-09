@@ -74,12 +74,16 @@ async function practiceCountTest() {
 }
 
 async function PrifileFieldTest() {
-    console.log("---PrifileFieldTest---")
-    
-  await NPP.updateProfileField("username", "gezi");
-  const profileFields = NPP.getAllProfileFields();
-  console.log(profileFields)
+  console.log("---PrifileFieldTest---");
+  let profileFields = NPP.getAllProfileFields();
+  console.log(profileFields);
 
+  console.log("---updateProfileFieldTest---");
+  await NPP.updateProfileField("username", "gezi");
+  profileFields = NPP.getAllProfileFields();
+  console.log(profileFields);
+
+  console.log("---deleteProfileFieldTest---");
   const cid = await NPP.deleteProfileField("username");
   const content = await NPP.node.dag.get(new IPFS.CID(cid));
   console.log(content.value.payload);

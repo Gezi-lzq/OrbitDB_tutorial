@@ -19,6 +19,8 @@ class NewPiecePlease {
   }
 
   async _init() {
+    // IPFS节点Info
+    const peerInfo = await this.node.id()
     // 返回一个已解析为 orbitdb 实例
     this.orbitdb = await this.OrbitDB.createInstance(this.node);
     // 基础配置 访问许可 仅能创作者本人访问
@@ -41,8 +43,14 @@ class NewPiecePlease {
     this.user = await this.orbitdb.kvstore('user', this.defaultOptions)
     await this.user.load()
 
-    // 插入数据 建立 'pieces' -> pieces database address 的映射
-    await this.user.set('pieces', this.pieces.id)
+    // // 插入数据 建立 'pieces' -> pieces database address 的映射
+    // await this.user.set('pieces', this.pieces.id)
+
+    await this.loadFixtureData({
+      'username': Math.floor(Math.random() * 1000000),
+      'pieces': this.pieces.id,
+      'nodeId': peerInfo.id
+    })
 
     this.onready();
   }
@@ -120,6 +128,15 @@ class NewPiecePlease {
   async updateProfileField (key, value) {
     const cid = await this.user.set(key,value)
     return cid
+  }
+
+  async loadFixtureData (fixtureData) {
+    const fixtureKeys = Object.keys(fixtureData)
+    for (let i in fixtureKeys) {
+      let key = fixtureKeys[i]
+      if(!this.user.get(key)) 
+        await this.user.set(key, fixtureData[key])
+    }
   }
 
 }
