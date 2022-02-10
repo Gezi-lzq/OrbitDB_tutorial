@@ -54,8 +54,13 @@ class NewPiecePlease {
 
     // 事件处理程序，用于处理连接到对等点的情况
     this.node.libp2p.connectionManager.on('peer:connect', this.handlePeerConnected.bind(this))
+    await this.node.pubsub.subscribe(peerInfo.id, this.handleMessageReceived.bind(this))
 
     this.onready();
+  }
+  
+  handleMessageReceived (msg) {
+    if (this.onmessage) this.onmessage(msg)
   }
 
   async addNewPiece(hash, instrument = "Piano") {
@@ -158,6 +163,16 @@ class NewPiecePlease {
   handlePeerConnected (ipfsPeer) {
     const ipfsId = ipfsPeer.id.toB58String()
     if (this.onpeerconnect) this.onpeerconnect(ipfsId)
+  }
+
+  async sendMessage(topic, message) {
+    try{
+      const msgString = JSON.stringify(message)
+      // const messageBuffer = this.Ipfs.Buffer(msgString)
+      await this.node.pubsub.publish(topic, message)
+    } catch (e) {
+      throw (e)
+    }
   }
 
 }

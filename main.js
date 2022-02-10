@@ -18,9 +18,10 @@ async function main() {
   await IPFSConnectTest();
 
   await deletePieceTest();
-  
+
   await getInpfsPeersTest();
-  await connectToPeerTest();
+  // await connectToPeerTest();
+  await subscribeTest();
 }
 
 async function addPieceTest() {
@@ -116,9 +117,17 @@ async function getInpfsPeersTest() {
 }
 
 async function connectToPeerTest() {
-  console.log("---connectToPeerTest---")
+  console.log("---connectToPeerTest---");
   NPP.onpeerconnect = console.log;
-  await NPP.connectToPeer("QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ","/ip4/104.131.131.82/udp/4001/quic/p2p/");
+  await NPP.connectToPeer("QmWxWkrCcgNBG2uf1HSVAwb9RzcSYYC2d6CRsfJcqrz2FX");
+}
+
+async function subscribeTest() {
+  console.log("---subscribeTest---")
+  NPP.onmessage = console.log;
+  let data = { test: "test" };
+  const hash = "QmXG8yk8UJjMT6qtE2zSxzz3U7z5jSYRgVWLCUFqAVnByM";
+  await NPP.sendMessage(hash, data);
 }
 
 main();
